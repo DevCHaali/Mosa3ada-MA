@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" /></head>
+    <title>صفحة الإدارة</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=El+Messiri:wght@400;500;600;700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            direction: rtl;
+            scroll-behavior: smooth;
+            font-family: 'El Messiri', sans-serif;;
+        }
+        h1{
+            text-align: center;
+            margin-top: 1em;
+        }
+        .regist{
+            display: inline-grid;
+            justify-content: center;
+            margin-right: 3em;
+        }
+        .input{
+            margin-bottom: 1em;
+            width: 25em;
+            font-size: 1.3em;
+            padding: 5px;
+            background-color: rgb(194, 199, 204);
+            border-radius: 5px;
+            border: none;
+        }
+        .btn{
+            width: 1em;
+            display: flex;
+            color: #3bba67;
+            font-size: 1.5em;
+            transition:  0.7s ease;
+        }
+        .btn:hover{
+            
+            font-size: 1.8em;
+            
+        }
+        .input2{
+            width: 20px;
+            margin: 9px;
+            display: grid;
+            grid-template-columns: 1em auto;
+            gap: 1em;
+            padding: 3em;
+            cursor: pointer;
+        }
+        .get{
+            margin-bottom: 2em;
+            margin-right: 5em;
+        }
+        .cityName,.pargrf,.label{
+            margin-top: 1.7em;
+            margin-bottom: 1.7em;
+            margin-right: 2em;
+
+        }
+        .get{
+            width: 50%;
+            border: 1px solid black;
+            border-radius: 5px;
+        }
+        .cityName{
+            margin-top: 15px;
+            text-align: center;
+            margin-right: 0;
+        }
+        .btn2{
+            width: 1em;
+            display: flex;
+            color: #3bba67;
+            font-size: 1.5em;
+            margin-bottom: 1em;
+            margin-right: 1em;
+            margin-top: 1em;
+            text-align: center;
+        }
+        h3{
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        .log{
+            margin-right: 2em;
+            font-size: 1.9em;
+        }
+        .pargrf{
+            width: 90%;
+            height: 50%;
+            font-size: 10px;
+            overflow: hidden;
+            overflow-x: visible;
+            resize: none;
+            border: none;
+        }
+        .edit-description{
+            background-color: rgb(194, 199, 204);
+            border-radius: 5px;
+            width: 100%;
+            height: 2em;
+            border: none;
+        }
+        @media (max-width:721px) {
+            h1{
+                font-size: 14px;
+            }
+            h3{
+                font-size: 10px;
+            }
+            .input{
+                width: 15em;
+                font-size: 14px;
+            }
+            .get{
+                width: 70%;
+            }
+}
+    </style>
+</head>
+<body>
+    <h1>صفحة التسجيل</h1><br><h3>المدن المتضررة جراء الزلزال </h3>
+    
+    <div class="regist">
+        <input class="input" type="text" id="city-name"  placeholder="اسم المدينة">
+        <input class="input" type="text" id="city-des" placeholder="يرجى وصف الحالة">
+        <label for="helped">تمت المساعدة؟</label><input class="input2" type="checkbox" id="helped">
+        
+        <a class="btn" id="save-city-button"><i class="fa-solid fa-floppy-disk"></i></a>
+    
+    </div>
+    <br>
+    <br>
+    <h1>إدارة البيانات</h1>
+    <h3>لتحميل القائمة يرجى اعادة تحميل الصفحة</h3>
+    <div id="data-container"></div>
+
+    <a class="log" href="https://mosa3adatma.mery-ch.repl.co/logout"><i class="fa-solid fa-right-from-bracket" style="color: #2dae36;"></i></a>
+ <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const cityNameInput = document.getElementById('city-name');
+            const cityDesInput = document.getElementById('city-des');
+            const helpedCheckbox = document.getElementById('helped');
+            const saveCityButton = document.getElementById('save-city-button');
+
+            // حفظ معلومات المدينة في ملف JSON
+            saveCityButton.addEventListener('click', function () {
+                const city = {
+                    name: cityNameInput.value,
+                    dicription: cityDesInput.value,
+                    helped: helpedCheckbox.checked
+                };
+
+                // إرسال معلومات المدينة إلى الخادم
+                fetch('/update-data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(city) // تحويل معلومات المدينة إلى JSON وإرسالها إلى الخادم
+                })
+                .then(response => response.json())
+                .then(() => {
+                    // بعد تحديث الملف JSON بنجاح، يمكنك إجراء الإجراءات الإضافية هنا (على سبيل المثال، إعادة تحميل الصفحة أو تحديث واجهة المستخدم)
+                    // يمكنك أيضًا إظهار رسالة تأكيد أو إخطار للمستخدم
+                    alert('تم حفظ المدينة بنجاح');
+                })
+                .catch(error => console.error('حدث خطأ أثناء تحديث البيانات:', error));
+            });
+
+            // ...
+        });
+    </script>
+    <script>
+        // تحميل البيانات من الملف JSON عند تحميل الصفحة
+        fetch('/data')
+            .then(response => response.json())
+            .then(data => {
+                const dataContainer = document.getElementById('data-container');
+                
+                dataContainer.innerHTML = ''; // مسح المحتوى السابق
+    
+                // عرض البيانات في الـ div
+                data.cities.forEach(city => {
+                    const cityDiv = document.createElement('div');
+                    cityDiv.setAttribute('data-name', city.name);
+                    cityDiv.setAttribute('class', 'get'); // تعيين معرف الاسم للعنصر div
+                    cityDiv.innerHTML = `
+                        <h2 class="cityName" >${city.name}</h2><br>
+                        وصف المدينة:<br>
+                        <p class="pargrf" > ${city.dicription || 'لا معلومات'}</p>
+                        <input type="text" class="edit-description" value="${city.dicription || ''}"><br>
+                        <label class="label">وصول المساعدات: <input type="checkbox" ${city.helped ? 'checked' : ''}></label>
+                        <a class="btn2" onclick="updateCity('${city.name}')"><i class="fa-solid fa-floppy-disk"></i></a>
+                    `;
+                    dataContainer.appendChild(cityDiv);
+                });
+            })
+            .catch(error => {
+                console.error('حدث خطأ أثناء تحميل البيانات:', error);
+            });
+    
+        // تحديث البيانات عند النقر على زر "حفظ"
+        function updateCity(cityName) {
+            const cityDiv = document.querySelector(`div[data-name="${cityName}"]`);
+            const editDescriptionInput = cityDiv.querySelector('.edit-description');
+            if (editDescriptionInput) {
+                const description = editDescriptionInput.value;
+                const helped = cityDiv.querySelector('input[type="checkbox"]').checked;
+    
+                // إرسال البيانات المحدثة إلى الخادم
+                fetch('/update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name: cityName, dicription: description, helped }),
+                })
+                    .then(response => response.json())
+                    .then(result => {
+                        console.log(result.message);
+                        
+                        // تحديث نص وصف المدينة
+                        const descriptionElement = cityDiv.querySelector('.pargrf');
+                        if (descriptionElement) {
+                            descriptionElement.textContent = `وصف المدينة: ${description}`;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('حدث خطأ أثناء تحديث البيانات:', error);
+                    });
+            } else {
+                console.error('لم يتم العثور على عنصر <input> داخل cityDiv');
+            }
+        }
+    </script>
+   
+</body>
+</html>
